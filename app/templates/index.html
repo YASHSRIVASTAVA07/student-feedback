@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Student Feedback</title>
+  <link rel="stylesheet" href="/static/style.css" />
+</head>
+<body>
+  <div class="container">
+    <h1>📘 Student Feedback Portal</h1>
+    <form method="POST">
+      <input name="name" placeholder="Your name" required>
+      <textarea name="feedback" placeholder="Your feedback..." required></textarea>
+      <button type="submit">Submit</button>
+    </form>
+
+    <h2>🗒️ Recent Feedback</h2>
+    {% for name, fb in rows %}
+      <div class="card">
+        <strong>{{ name }}</strong><p>{{ fb }}</p>
+      </div>
+    {% else %}
+      <p>No feedback yet.</p>
+    {% endfor %}
+  </div>
+</body>
+</html>
