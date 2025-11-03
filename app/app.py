@@ -1,26 +1,22 @@
-from flask import Flask, render_template, request, redirect
-import sqlite3
+from flask import Flask, render_template, request
 
 app = Flask(__name__)
-DB = "feedback.db"
 
-# Initialize DB
-def init_db():
-    with sqlite3.connect(DB) as conn:
-        conn.execute("CREATE TABLE IF NOT EXISTS feedback (name TEXT, feedback TEXT)")
+feedback_list = []
 
-@app.route("/", methods=["GET", "POST"])
-def home():
-    if request.method == "POST":
-        name = request.form["name"]
-        feedback = request.form["feedback"]
-        with sqlite3.connect(DB) as conn:
-            conn.execute("INSERT INTO feedback (name, feedback) VALUES (?, ?)", (name, feedback))
-        return redirect("/")
-    with sqlite3.connect(DB) as conn:
-        rows = conn.execute("SELECT name, feedback FROM feedback").fetchall()
-    return render_template("index.html", rows=rows)
+@app.route('/')
+def index():
+    return render_template('index.html', feedbacks=feedback_list)
 
-if __name__ == "__main__":
-    init_db()
-    app.run(host="0.0.0.0", port=5000)
+@app.route('/submit', methods=['POST'])
+def submit():
+    name = request.form.get('name')
+    feedback = request.form.get('feedback')
+
+    if name and feedback:
+        feedback_list.append({'name': name, 'feedback': feedback})
+
+    return render_template('index.html', feedbacks=feedback_list, message="Feedback submitted successfully!")
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=5000)
