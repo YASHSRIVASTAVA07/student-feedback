@@ -1,6 +1,10 @@
 pipeline {
     agent any
 
+    environment {
+        DOCKER_IMAGE = "student-feedback-app"
+    }
+
     stages {
         stage('Clone Code') {
             steps {
@@ -10,8 +14,8 @@ pipeline {
 
         stage('Build Docker Image') {
             steps {
-                script {
-                    sh 'docker build -t student-feedback-app .'
+                dir('app') {
+                    sh 'docker build -t ${DOCKER_IMAGE} .'
                 }
             }
         }
@@ -19,7 +23,12 @@ pipeline {
         stage('Run Container') {
             steps {
                 script {
-                    sh 'docker run -d -p 80:80 --name feedback student-feedback-app || true'
+                    // Stop and remove old container if exists
+                    sh '''
+                    docker stop student-feedback || true
+                    docker rm student-feedback || true
+                    docker run -d -p 5000:5000 --name student-feedback ${DOCKER_IMAGE}
+                    '''
                 }
             }
         }
