@@ -1,26 +1,27 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Student Feedback</title>
-  <link rel="stylesheet" href="/static/style.css" />
+    <meta charset="UTF-8">
+    <title>Student Feedback</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-  <div class="container">
-    <h1>📘 Student Feedback Portal</h1>
-    <form method="POST">
-      <input name="name" placeholder="Your name" required>
-      <textarea name="feedback" placeholder="Your feedback..." required></textarea>
-      <button type="submit">Submit</button>
+    <h1>Student Feedback Form</h1>
+    <form action="/submit" method="POST">
+        <input type="text" name="name" placeholder="Your Name" required>
+        <textarea name="feedback" placeholder="Your Feedback" required></textarea>
+        <button type="submit">Submit</button>
     </form>
 
-    <h2>🗒️ Recent Feedback</h2>
-    {% for name, fb in rows %}
-      <div class="card">
-        <strong>{{ name }}</strong><p>{{ fb }}</p>
-      </div>
-    {% else %}
-      <p>No feedback yet.</p>
-    {% endfor %}
-  </div>
+    {% if message %}
+        <p class="success">{{ message }}</p>
+    {% endif %}
+
+    <h2>All Feedback</h2>
+    <ul>
+        {% for item in feedbacks %}
+            <li><b>{{ item.name }}</b>: {{ item.feedback }}</li>
+        {% endfor %}
+    </ul>
 </body>
 </html>
